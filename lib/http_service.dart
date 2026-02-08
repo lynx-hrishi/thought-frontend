@@ -141,6 +141,27 @@ class HttpService{
     final cookieJar = PersistCookieJar(storage: FileStorage('${dir.path}/.cookies/'));
     await cookieJar.deleteAll();
   }
+
+  Future<bool> likeUserService(String toUser) async {
+    final Response res = await dio.post("/api/match/like-user", data: {
+      "toUser": toUser
+    });
+
+    bool hasMatched = res.data['data']['matchStatus'];
+    return hasMatched;
+  }
+
+  Future<Response> passUserService(String toUser) async {
+    return await dio.post("/api/match/pass-user", data: {
+      "toUser": toUser
+    });
+  }
+
+  Future<List> getMatchedUsersService() async {
+    final Response res = await dio.get("/api/match/get-matched-users");
+    List matchedUsers = res.data['data'];
+    return matchedUsers;
+  }
 }
 
 

@@ -44,7 +44,21 @@ class _MatchPageState extends State<MatchPage> {
     }
   }
 
-  void onLike() {
+  void onLike() async {
+    if (currentIndex < users.length) {
+      try {
+        bool hasMatched = await _httpService.likeUserService(users[currentIndex].id);
+        if (hasMatched && mounted) {
+          _showMatchDialog(users[currentIndex]);
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $e')),
+          );
+        }
+      }
+    }
     if (currentIndex < users.length - 1) {
       setState(() {
         currentIndex++;
@@ -56,7 +70,18 @@ class _MatchPageState extends State<MatchPage> {
     }
   }
 
-  void onReject() {
+  void onReject() async {
+    if (currentIndex < users.length) {
+      try {
+        await _httpService.passUserService(users[currentIndex].id);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $e')),
+          );
+        }
+      }
+    }
     if (currentIndex < users.length - 1) {
       setState(() {
         currentIndex++;
@@ -66,6 +91,51 @@ class _MatchPageState extends State<MatchPage> {
         currentIndex++;
       });
     }
+  }
+
+  void _showMatchDialog(UserModel matchedUser) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.favorite,
+                color: AppTheme.pink,
+                size: 80,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "It's a Match!",
+                style: GoogleFonts.poppins(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'You and ${matchedUser.name} liked each other!',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  color: Colors.grey[700],
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Continue Swiping'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
