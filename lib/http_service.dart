@@ -36,14 +36,18 @@ class HttpService{
       )
     );
 
+    dio.interceptors.add(CookieManager(cookieJar));
+
     dio.interceptors.add(
       LogInterceptor(
-        request: true,
+        // request: true,
         requestUrl: true,
-        requestHeader: true,
-        responseHeader: true
+        // requestHeader: true,
+        // responseHeader: true
       )
     );
+
+    _initialized = true;
   }
 
   Future<Response> loginUser({ required String email }) async {
@@ -67,12 +71,12 @@ class HttpService{
     
     for (var user in matches){
       String profileImage = user['profileImageUrl'];
-      List<String> postImages = user['postImageUrl'];
+      List postImages = user['postImageUrl'];
 
       List<String> userImages = [profileImage];
       
       for (var img in postImages){
-        userImages.add(img);
+        userImages.add(img.toString());
       }
 
       UserModel newUser = UserModel(
@@ -83,13 +87,12 @@ class HttpService{
         dateOfBirth: user['dateOfBirth'], 
         zodiacSign: user['zodiacSign'], 
         profession: user['profession'], 
-        interests: user['interests'], 
+        interests: List<String>.from(user['interests']), 
         images: userImages
       );
 
       users.add(newUser);
     }
-    // users.add();
     return users;
   }
 }
