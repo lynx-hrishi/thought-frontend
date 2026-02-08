@@ -124,30 +124,33 @@ class _UserCardState extends State<UserCard> with SingleTickerProviderStateMixin
                           borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(20),
                           ),
-                          child: Image(
-                            image: DioImage(widget.user.images[currentImageIndex]),
-                            fit: BoxFit.cover,
+                          child: SizedBox(
                             width: double.infinity,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                color: Colors.grey[200],
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress.cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
+                            height: double.infinity,
+                            child: Image(
+                              image: DioImage(widget.user.images[currentImageIndex]),
+                              fit: BoxFit.cover,
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Container(
+                                  color: Colors.grey[200],
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      value: loadingProgress.expectedTotalBytes != null
+                                          ? loadingProgress.cumulativeBytesLoaded /
+                                              loadingProgress.expectedTotalBytes!
+                                          : null,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.grey[300],
-                                child: const Icon(Icons.image_not_supported),
-                              );
-                            },
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey[300],
+                                  child: const Icon(Icons.image_not_supported),
+                                );
+                              },
+                            ),
                           ),
                         ),
                         // Image indicators
@@ -265,7 +268,7 @@ class _UserCardState extends State<UserCard> with SingleTickerProviderStateMixin
                               spacing: 6,
                               runSpacing: 4,
                               children: widget.user.interests
-                                  .take(3)
+                                  .take(widget.user.interests.length)
                                   .map(
                                     (interest) => Chip(
                                       label: Text(

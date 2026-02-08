@@ -97,6 +97,33 @@ class HttpService{
     }
     return users;
   }
+
+  Future<UserModel> getUserDetails() async {
+    final Response res = await dio.get("/api/user/get-user-details");
+    
+    var user = res.data['data'];
+    String profileImage = user['profileImageUrl'];
+    List postImages = user['postImageUrl'];
+
+    List<String> userImages = [profileImage];
+    
+    for (var img in postImages){
+      userImages.add(img.toString());
+    }
+
+    return UserModel(
+      id: user['_id'], 
+      email: user['email'], 
+      name: user['name'], 
+      gender: user['gender'], 
+      dateOfBirth: user['dateOfBirth'], 
+      zodiacSign: user['zodiacSign'], 
+      profession: user['profession'], 
+      interests: List<String>.from(user['interests']), 
+      images: userImages,
+      partnerPreference: user['partnerPreference']
+    );
+  }
 }
 
 
