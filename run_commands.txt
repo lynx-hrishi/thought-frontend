@@ -1,0 +1,8 @@
+emulator -list-avds
+emulator -avd <device_name>
+adb devices  // emulator-5554
+flutter run -d emulator_id
+
+ONCE GOT SUCCESSFUL RUNNING
+press r for hot reload   // Minor changes
+press R for hot restart  // Major changes

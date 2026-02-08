@@ -1,0 +1,221 @@
+pract 1- - Create an Android application in Flutter that demonstrates the use of Container, SizedBox, Text, widgets.(25-11-2025)
+Container(
+    child: Text(
+    "Hello World"
+    ),
+),
+SizedBox(height: 20, width: 20,)
+
+
+Pract 2- Create an Android application in Flutter that demonstrates the use of Row, Column, Text, and Buttons.(Dialpad) (26-11-2025)
+Row(
+    children: [
+    Text("Hello World")
+    ],
+),
+Column(
+    children: [
+    TextButton(
+        child: Text("Click"),
+        onPressed: (){
+        print("Button Clicked");
+        },
+    )
+    ]
+)
+
+
+Pract 3- Create an Android application in Flutter that demonstrates the use of Image, Icon, ListView, ListTile widgets. (2-12-2025)
+Image.asset("/assets/images/1.png", height: 20, width: 20,),
+Icon(Icons.person),
+ListView(
+    children: [
+        ListTile(
+            leading: Icon(Icons.person),
+            title: Text("Hrishikesh"),
+            subtitle: Text("20"),
+            trailing: Icon(Icons.call),
+        )
+    ],
+)
+
+Pract 4-Create an Android application in Flutter to design Calculator app.(using TextField) (3-12-2025)
+TextEditingController num1 = TextEditingController();
+TextEditingController num2 = TextEditingController();
+
+TextButton createButton(String text, Function() onPressed){
+  return TextButton(
+    onPressed: onPressed,
+    child: Text(text)
+  );
+}
+
+SizedBox(height: 20),
+TextField(
+    controller: num1,
+    decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: "Enter Number 1"
+    ),
+),
+SizedBox(height: 20),
+TextField(
+    controller: num2,
+    decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: "Enter Number 2"
+    ),
+),
+createButton("+", (){ print(int.parse(num1.text) + int.parse(num2.text)); }),
+createButton("-", (){ print(int.parse(num1.text) - int.parse(num2.text)); }),
+createButton("*", (){ print(int.parse(num1.text) * int.parse(num2.text)); }),
+createButton("/", (){ print(int.parse(num1.text) / int.parse(num2.text)); }),
+
+
+Pract 5- Create an Android application in Flutter to design login Page using stateful widget.(also add hide password code) (12-12-2025)
+TextEditingController email = TextEditingController();
+TextEditingController password = TextEditingController();
+
+TextField createTextField(String label, bool isPassword, TextEditingController controller) {
+  return TextField(
+    controller: controller,
+    obscureText: isPassword,
+    decoration: InputDecoration(
+      labelText: label,
+      border: OutlineInputBorder(),
+    ),
+  );
+}
+
+SizedBox(height: 20,),
+createTextField("Enter Email", false, email),
+SizedBox(height: 20,),
+createTextField("Enter Password", true, password),
+TextButton(
+    child: Text("Submit"),
+    onPressed: (){
+    if (email.text == "abc@gmail.com" && password.text == "123"){
+        print("Login Successful");
+    }
+    else{
+        print("Login Failed");
+    }
+    },
+)
+
+
+pract 6- Create an Android application in Flutter to create a Registration Form with TextField, RadioButton, CheckBox and Dropdownlist widgets and on Button Fetch the Details
+and Show It on Screen(DialogBox, FlutterToast or as Text)(Using Stateful Widget)(17-12-2025)
+TextEditingController name = TextEditingController();
+TextEditingController age = TextEditingController();
+TextEditingController email = TextEditingController();
+TextEditingController password = TextEditingController();
+
+String gender = "";
+
+bool python = false;
+bool java = false;
+bool cpp = false;
+
+String exp = "";
+List experiences = ["Begineer", "Intermediate", "Expert"];
+
+TextField createTextField(String label, bool isPassword, TextEditingController controller) {
+  return TextField(
+    controller: controller,
+    obscureText: isPassword,
+    decoration: InputDecoration(
+      labelText: label,
+      border: OutlineInputBorder(),
+    ),
+  );
+}
+
+ListTile createRadioButton(String label, String groupValueStr, Function(String?) onChangeFunc){
+  return ListTile(
+    title: Text(label),
+    leading: Radio(
+      value: label.toLowerCase(),
+      groupValue: groupValueStr,
+      onChanged: onChangeFunc,
+    ),
+  );
+}
+
+CheckboxListTile createCheckBox(String label, bool value, Function(bool?) onChanged){
+  return CheckboxListTile(
+    title: Text(label),
+    value: value,
+    onChanged: onChanged,
+    controlAffinity: ListTileControlAffinity.leading,
+  );
+}
+
+SizedBox(height: 20,),
+createTextField("Enter Name", false, name),
+SizedBox(height: 20,),
+createTextField("Enter Age", false, age),
+SizedBox(height: 20,),
+createTextField("Enter Email", false, email),
+SizedBox(height: 20,),
+createTextField("Enter Password", false, password),
+SizedBox(height: 20,),
+createRadioButton("Male", gender, 
+    (value) {
+    setState(() {
+        gender = value!;
+    });
+    }
+),
+createRadioButton("Female", gender, 
+    (value) {
+    setState(() {
+        gender = value!;
+    });
+    }
+),
+createCheckBox("Python", python, 
+    (bool? value){
+    setState(() {
+        python = value!;
+    });
+    }  
+),
+createCheckBox("Java", java, 
+    (bool? value){
+    setState(() {
+        java = value!;
+    });
+    }  
+),
+createCheckBox("C++", cpp, 
+    (bool? value){
+    setState(() {
+        cpp = value!;
+    });
+    }  
+),
+DropdownButton(
+    value: exp,
+    items: experiences.map((e) {
+        return DropdownMenuItem<String>(
+            value: e,
+            child: Text(e),
+        );
+    }).toList(), 
+    onChanged: (value){
+    setState(() {
+        exp = value!;
+    });
+    }
+),
+TextButton(
+    onPressed: (){
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+        content: Text("${name.text}\n${age.text}\n${email.text}\n${password.text}\n${gender}\n${python ? "Python\n": ""}${java ? "Java": ""}${cpp ? "C++\n" : ""}${exp}")
+        )
+    );
+    }, 
+    child: Text("Submit")
+)
