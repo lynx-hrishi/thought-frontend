@@ -1,0 +1,107 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../models/user_model.dart';
+import '../models/dummy_data_provider.dart';
+import '../theme.dart';
+import 'user_card.dart';
+
+class MatchPage extends StatefulWidget {
+  const MatchPage({super.key});
+
+  @override
+  State<MatchPage> createState() => _MatchPageState();
+}
+
+class _MatchPageState extends State<MatchPage> {
+  late List<UserModel> users;
+  int currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    users = DummyDataProvider.getDummyUsers();
+  }
+
+  void onLike() {
+    if (currentIndex < users.length - 1) {
+      setState(() {
+        currentIndex++;
+      });
+    } else {
+      setState(() {
+        currentIndex++;
+      });
+    }
+  }
+
+  void onReject() {
+    if (currentIndex < users.length - 1) {
+      setState(() {
+        currentIndex++;
+      });
+    } else {
+      setState(() {
+        currentIndex++;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Discover',
+          style: GoogleFonts.poppins(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
+      body: currentIndex >= users.length
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.favorite_outline,
+                    size: 64,
+                    color: AppTheme.pink,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No more profiles',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Check back later for more matches',
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Stack(
+              children: [
+                Positioned.fill(
+                  child: UserCard(
+                    key: ValueKey(currentIndex),
+                    user: users[currentIndex],
+                    onLike: onLike,
+                    onReject: onReject,
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+}

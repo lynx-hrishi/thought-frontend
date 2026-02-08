@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AppTheme {
   static const lavender = Color(0xFF7E57C2);
@@ -12,6 +13,13 @@ class AppTheme {
       seedColor: lavender,
       primary: lavender,
       secondary: pink,
+    ),
+    appBarTheme: const AppBarTheme(
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

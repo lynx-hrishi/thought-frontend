@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'theme.dart';
-import 'dashboard_page.dart';
+import 'pages/dashboard_page.dart';
 import 'personal_details_page.dart';
 
 class OtpPage extends StatefulWidget {
