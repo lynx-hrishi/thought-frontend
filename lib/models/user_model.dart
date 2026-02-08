@@ -9,6 +9,7 @@ class UserModel {
   final List<String> interests;
   final List<String> images;
   final String? partnerPreference;
+  final int? age;
 
   UserModel({
     required this.id,
@@ -20,6 +21,7 @@ class UserModel {
     required this.profession,
     required this.interests,
     required this.images,
-    this.partnerPreference
+    this.partnerPreference,
+    required this.age
   });
 }

@@ -90,7 +90,8 @@ class HttpService{
         profession: user['profession'], 
         interests: List<String>.from(user['interests']), 
         images: userImages,
-        partnerPreference: user['partnerPreference']
+        partnerPreference: user['partnerPreference'],
+        age: user['age']
       );
 
       users.add(newUser);
@@ -121,8 +122,24 @@ class HttpService{
       profession: user['profession'], 
       interests: List<String>.from(user['interests']), 
       images: userImages,
-      partnerPreference: user['partnerPreference']
+      partnerPreference: user['partnerPreference'],
+      age: user['age']
     );
+  }
+
+  Future<bool> checkSession() async {
+    try {
+      await dio.get("/api/user/get-user-details");
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> logout() async {
+    final dir = await getApplicationDocumentsDirectory();
+    final cookieJar = PersistCookieJar(storage: FileStorage('${dir.path}/.cookies/'));
+    await cookieJar.deleteAll();
   }
 }
 

@@ -234,25 +234,30 @@ class _UserCardState extends State<UserCard> with SingleTickerProviderStateMixin
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Text(
-                                  widget.user.name,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(width: 8, height: 4,),
-                                Text(
-                                  '${_getZodiacEmoji(widget.user.zodiacSign)} ${widget.user.zodiacSign}',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              '${widget.user.name}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 8, height: 4,),
+                            Text(
+                              '${widget.user.age}, ${widget.user.gender}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${_getZodiacEmoji(widget.user.zodiacSign)} ${widget.user.zodiacSign}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                              ),
                             ),
                             const SizedBox(height: 4),
                             Text(

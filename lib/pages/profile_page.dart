@@ -4,6 +4,7 @@ import '../http_service.dart';
 import '../models/user_model.dart';
 import '../theme.dart';
 import '../widgets/dio_image.dart';
+import '../login_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -59,6 +60,16 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _logout() async {
+    await HttpService().logout();
+    if (mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+        (route) => false,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -90,15 +101,40 @@ class _ProfilePageState extends State<ProfilePage> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              // TODO: Navigate to edit profile page
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Edit profile coming soon')),
-              );
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'edit') {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Edit profile coming soon')),
+                );
+              } else if (value == 'logout') {
+                _logout();
+              }
             },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'edit',
+                child: Row(
+                  children: [
+                    Icon(Icons.edit),
+                    SizedBox(width: 8),
+                    Text('Edit Profile'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout),
+                    SizedBox(width: 8),
+                    Text('Logout'),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -132,17 +168,26 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   // Name and Age
                   Text(
-                    user!.name,
+                    '${user!.name}',
                     style: GoogleFonts.poppins(
-                      fontSize: 28,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${user!.age}, ${user!.gender}',
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   Text(
                     '${_getZodiacEmoji(user!.zodiacSign)} ${user!.zodiacSign}',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: Colors.grey,
                     ),
@@ -152,7 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Text(
                     user!.profession,
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: Colors.grey[700],
                     ),
@@ -178,7 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Text(
                     'Interests',
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -206,9 +251,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   // Partner Preference
                   if (user!.partnerPreference != null)
                     Text(
-                      'About Me',
+                      'Your Ideal Date Expectation',
                       style: GoogleFonts.poppins(
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -218,6 +263,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Text(
                       user!.partnerPreference!,
                       style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
                         fontSize: 14,
                         color: Colors.grey[700],
                         height: 1.5,

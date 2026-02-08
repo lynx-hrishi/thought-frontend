@@ -90,6 +90,7 @@ class _MatchPageState extends State<MatchPage> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
       ),
       body: currentIndex >= users.length
           ? Center(

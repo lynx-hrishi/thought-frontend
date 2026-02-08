@@ -18,6 +18,7 @@ class MessagesPage extends StatelessWidget {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Column(
