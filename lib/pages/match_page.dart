@@ -1,3 +1,5 @@
+import 'package:currency_converter/http_service.dart';
+import 'package:currency_converter/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/user_model.dart';
@@ -13,13 +15,33 @@ class MatchPage extends StatefulWidget {
 }
 
 class _MatchPageState extends State<MatchPage> {
-  late List<UserModel> users;
+  List<UserModel> users = [];
   int currentIndex = 0;
+  HttpService _httpService = HttpService();
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    users = DummyDataProvider.getDummyUsers();
+    _loadUsers();
+  }
+
+  Future<void> _loadUsers() async {
+    try{
+      final fetchedUsers = await _httpService.getMatchesForUsers();
+      setState(() {
+        users = fetchedUsers;
+        isLoading = false;
+      });
+    }
+    catch(err){
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(err.toString())),
+        );
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginPage()));
+      }
+    }
   }
 
   void onLike() {
@@ -48,6 +70,14 @@ class _MatchPageState extends State<MatchPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(

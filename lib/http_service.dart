@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:currency_converter/models/user_model.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
@@ -58,6 +59,39 @@ class HttpService{
     });
   }
   
+  Future<List<UserModel>> getMatchesForUsers({ int page=1, int limit=10 } ) async {
+    final Response res = await dio.get("/api/match/matches?page=$page&limit=$limit");
+    
+    List matches = res.data['data']['matches'];
+    List<UserModel> users = [];
+    
+    for (var user in matches){
+      String profileImage = user['profileImageUrl'];
+      List<String> postImages = user['postImageUrl'];
+
+      List<String> userImages = [profileImage];
+      
+      for (var img in postImages){
+        userImages.add(img);
+      }
+
+      UserModel newUser = UserModel(
+        id: user['_id'], 
+        email: user['email'], 
+        name: user['name'], 
+        gender: user['gender'], 
+        dateOfBirth: user['dateOfBirth'], 
+        zodiacSign: user['zodiacSign'], 
+        profession: user['profession'], 
+        interests: user['interests'], 
+        images: userImages
+      );
+
+      users.add(newUser);
+    }
+    // users.add();
+    return users;
+  }
 }
 
 
