@@ -27,7 +27,7 @@ class HttpService{
 
     dio = Dio(
       BaseOptions(
-        baseUrl: "https://1c8c-2409-40c0-103a-5d67-b1d5-e432-b0de-5971.ngrok-free.app",
+        baseUrl: "https://arranged-communities-pdt-snake.trycloudflare.com",
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
         headers: {
@@ -70,6 +70,7 @@ class HttpService{
     List<UserModel> users = [];
     
     for (var user in matches){
+      print(user);
       String profileImage = user['profileImageUrl'];
       List postImages = user['postImageUrl'];
 
@@ -88,7 +89,8 @@ class HttpService{
         zodiacSign: user['zodiacSign'], 
         profession: user['profession'], 
         interests: List<String>.from(user['interests']), 
-        images: userImages
+        images: userImages,
+        partnerPreference: user['partnerPreference']
       );
 
       users.add(newUser);

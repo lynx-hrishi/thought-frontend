@@ -76,18 +76,18 @@ class _UserCardState extends State<UserCard> with SingleTickerProviderStateMixin
 
   String _getZodiacEmoji(String zodiacSign) {
     switch (zodiacSign) {
-      case 'Aries': return '♈';
-      case 'Taurus': return '♉';
-      case 'Gemini': return '♊';
-      case 'Cancer': return '♋';
-      case 'Leo': return '♌';
-      case 'Virgo': return '♍';
-      case 'Libra': return '♎';
-      case 'Scorpio': return '♏';
-      case 'Sagittarius': return '♐';
-      case 'Capricorn': return '♑';
-      case 'Aquarius': return '♒';
-      case 'Pisces': return '♓';
+      case 'ARIES': return '♈';
+      case 'TAURUS': return '♉';
+      case 'GEMINI': return '♊';
+      case 'CANCER': return '♋';
+      case 'LEO': return '♌';
+      case 'VIRGO': return '♍';
+      case 'LIBRA': return '♎';
+      case 'SCORPIO': return '♏';
+      case 'SAGITTARIUS': return '♐';
+      case 'CAPRICON': return '♑';
+      case 'AQUARIS': return '♒';
+      case 'PISCES': return '♓';
       default: return '';
     }
   }
