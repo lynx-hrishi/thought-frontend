@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/user_model.dart';
 import '../theme.dart';
+import '../widgets/dio_image.dart';
 
 class UserCard extends StatefulWidget {
   final UserModel user;
@@ -123,10 +124,24 @@ class _UserCardState extends State<UserCard> with SingleTickerProviderStateMixin
                           borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(20),
                           ),
-                          child: Image.network(
-                            widget.user.images[currentImageIndex],
+                          child: Image(
+                            image: DioImage(widget.user.images[currentImageIndex]),
                             fit: BoxFit.cover,
                             width: double.infinity,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                color: Colors.grey[200],
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes != null
+                                        ? loadingProgress.cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            },
                             errorBuilder: (context, error, stackTrace) {
                               return Container(
                                 color: Colors.grey[300],
