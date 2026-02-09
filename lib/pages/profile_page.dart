@@ -5,6 +5,7 @@ import '../models/user_model.dart';
 import '../theme.dart';
 import '../widgets/dio_image.dart';
 import '../login_page.dart';
+import 'edit_profile_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -104,11 +105,17 @@ class _ProfilePageState extends State<ProfilePage> {
         automaticallyImplyLeading: false,
         actions: [
           PopupMenuButton<String>(
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 'edit') {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Edit profile coming soon')),
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => EditProfilePage(user: user!),
+                  ),
                 );
+                if (result == true) {
+                  _loadUserProfile();
+                }
               } else if (value == 'logout') {
                 _logout();
               }

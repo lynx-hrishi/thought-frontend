@@ -27,7 +27,7 @@ class HttpService{
 
     dio = Dio(
       BaseOptions(
-        baseUrl: "https://arranged-communities-pdt-snake.trycloudflare.com",
+        baseUrl: "https://meters-deferred-casey-hang.trycloudflare.com",
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
         headers: {
@@ -204,7 +204,7 @@ class HttpService{
       }
     }
     
-    return await dio.put("/api/user/update-profile", data: formData);
+    return await dio.patch("/api/user/update-profile", data: formData);
   }
 }
 
