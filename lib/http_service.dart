@@ -162,6 +162,50 @@ class HttpService{
     List matchedUsers = res.data['data'];
     return matchedUsers;
   }
+
+  Future<Response> updateProfile({
+    String? gender,
+    String? profession,
+    List<String>? interests,
+    String? partnerGender,
+    String? partnerPreference,
+    int? ageFrom,
+    int? ageEnd,
+    File? profileImage,
+    List<File>? postImages
+  }) async {
+    FormData formData = FormData();
+    
+    if (gender != null) formData.fields.add(MapEntry('gender', gender));
+    if (profession != null) formData.fields.add(MapEntry('profession', profession));
+    if (interests != null) {
+      for (var interest in interests) {
+        formData.fields.add(MapEntry('interests', interest));
+      }
+    }
+    if (partnerGender != null) formData.fields.add(MapEntry('partnerGender', partnerGender));
+    if (partnerPreference != null) formData.fields.add(MapEntry('partnerPreference', partnerPreference));
+    if (ageFrom != null) formData.fields.add(MapEntry('ageFrom', ageFrom.toString()));
+    if (ageEnd != null) formData.fields.add(MapEntry('ageEnd', ageEnd.toString()));
+    
+    if (profileImage != null) {
+      formData.files.add(MapEntry(
+        'profileImage',
+        await MultipartFile.fromFile(profileImage.path, filename: profileImage.path.split('/').last)
+      ));
+    }
+    
+    if (postImages != null) {
+      for (var image in postImages) {
+        formData.files.add(MapEntry(
+          'postImages',
+          await MultipartFile.fromFile(image.path, filename: image.path.split('/').last)
+        ));
+      }
+    }
+    
+    return await dio.put("/api/user/update-profile", data: formData);
+  }
 }
 
 
