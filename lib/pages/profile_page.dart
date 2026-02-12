@@ -17,6 +17,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   UserModel? user;
   bool isLoading = true;
+  int imageRefreshKey = 0;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         user = userData;
         isLoading = false;
+        imageRefreshKey++;
       });
     } catch (e) {
       setState(() {
@@ -155,7 +157,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 itemCount: user!.images.length,
                 itemBuilder: (context, index) {
                   return Image(
-                    image: DioImage(user!.images[index]),
+                    image: DioImage(user!.images[index], cacheKey: imageRefreshKey),
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;

@@ -7,8 +7,9 @@ import '../http_service.dart';
 class DioImage extends ImageProvider<DioImage> {
   final String url;
   final double scale;
+  final int? cacheKey;
 
-  const DioImage(this.url, {this.scale = 1.0});
+  const DioImage(this.url, {this.scale = 1.0, this.cacheKey});
 
   @override
   Future<DioImage> obtainKey(ImageConfiguration configuration) {
@@ -47,9 +48,12 @@ class DioImage extends ImageProvider<DioImage> {
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is DioImage && other.url == url && other.scale == scale;
+    return other is DioImage && 
+           other.url == url && 
+           other.scale == scale &&
+           other.cacheKey == cacheKey;
   }
 
   @override
-  int get hashCode => Object.hash(url, scale);
+  int get hashCode => Object.hash(url, scale, cacheKey);
 }

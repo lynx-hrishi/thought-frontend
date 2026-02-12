@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../http_service.dart';
 import '../widgets/dio_image.dart';
+import '../services/socket_service.dart';
+import './chat_page.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
@@ -13,11 +15,19 @@ class MessagesPage extends StatefulWidget {
 class _MessagesPageState extends State<MessagesPage> {
   List matchedUsers = [];
   bool isLoading = true;
+  String currentUserId = '';
 
   @override
   void initState() {
     super.initState();
+    _initSocket();
     _loadMatchedUsers();
+  }
+
+  Future<void> _initSocket() async {
+    final user = await HttpService().getUserDetails();
+    currentUserId = user.id;
+    SocketService().init(currentUserId);
   }
 
   Future<void> _loadMatchedUsers() async {
@@ -96,9 +106,14 @@ class _MessagesPageState extends State<MessagesPage> {
                         ),
                       ),
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Messaging coming soon!'),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ChatPage(
+                              userId: user['_id'],
+                              userName: user['name'],
+                              currentUserId: currentUserId,
+                            ),
                           ),
                         );
                       },

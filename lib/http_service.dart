@@ -27,7 +27,7 @@ class HttpService{
 
     dio = Dio(
       BaseOptions(
-        baseUrl: "https://meters-deferred-casey-hang.trycloudflare.com",
+        baseUrl: "https://reach-source-guaranteed-introducing.trycloudflare.com",
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
         headers: {
@@ -63,6 +63,10 @@ class HttpService{
     });
   }
   
+  String _normalizeGender(String gender) {
+    return gender.toUpperCase();
+  }
+
   Future<List<UserModel>> getMatchesForUsers({ int page=1, int limit=10 } ) async {
     final Response res = await dio.get("/api/match/matches?page=$page&limit=$limit");
     
@@ -84,7 +88,7 @@ class HttpService{
         id: user['_id'], 
         email: user['email'], 
         name: user['name'], 
-        gender: user['gender'], 
+        gender: _normalizeGender(user['gender']), 
         dateOfBirth: user['dateOfBirth'], 
         zodiacSign: user['zodiacSign'], 
         profession: user['profession'], 
@@ -116,7 +120,7 @@ class HttpService{
       id: user['_id'], 
       email: user['email'], 
       name: user['name'], 
-      gender: user['gender'], 
+      gender: _normalizeGender(user['gender']), 
       dateOfBirth: user['dateOfBirth'], 
       zodiacSign: user['zodiacSign'], 
       profession: user['profession'], 
@@ -205,6 +209,10 @@ class HttpService{
     }
     
     return await dio.patch("/api/user/update-profile", data: formData);
+  }
+
+  Future<Response> deleteUserPost(int index) async {
+    return await dio.delete("/api/user/delete-post-image/$index");
   }
 }
 
