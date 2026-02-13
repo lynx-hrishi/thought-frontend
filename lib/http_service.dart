@@ -27,7 +27,7 @@ class HttpService{
 
     dio = Dio(
       BaseOptions(
-        baseUrl: "https://reach-source-guaranteed-introducing.trycloudflare.com",
+        baseUrl: "https://thoughtdrop-backend.onrender.com",
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
         headers: {

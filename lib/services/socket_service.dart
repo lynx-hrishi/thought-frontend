@@ -13,7 +13,7 @@ class SocketService {
     if (_initialized) return;
 
     socket = IO.io(
-      'https://reach-source-guaranteed-introducing.trycloudflare.com',
+      'https://thoughtdrop-backend.onrender.com',
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect()
