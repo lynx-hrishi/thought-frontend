@@ -67,7 +67,7 @@ class HttpService{
     return gender.toUpperCase();
   }
 
-  Future<List<UserModel>> getMatchesForUsers({ int page=1, int limit=10 } ) async {
+  Future<List<UserModel>> getMatchesForUsers({ int page=1, int limit=40 } ) async {
     final Response res = await dio.get("/api/match/matches?page=$page&limit=$limit");
     
     List matches = res.data['data']['matches'];

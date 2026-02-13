@@ -3,6 +3,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'notification_service.dart';
 import '../pages/chat_page.dart';
+import '../http_service.dart';
 
 class SocketService {
   static final SocketService _instance = SocketService._internal();
@@ -57,12 +58,28 @@ class SocketService {
           onMessageReceived!(data);
         } else {
           print('Notification active');
+          
+          String senderName = 'New Message';
+          try {
+            final matchedUsers = await HttpService().getMatchedUsersService();
+            final sender = matchedUsers.firstWhere(
+              (user) => user['_id'] == data['senderId'],
+              orElse: () => null,
+            );
+            if (sender != null) {
+              senderName = sender['name'] ?? 'New Message';
+            }
+          } catch (e) {
+            print('Failed to fetch sender name: $e');
+          }
+          
           await NotificationService().showMessageNotification(
-            title: 'New Message',
+            title: senderName,
             body: data['message'] ?? 'You have a new message',
             senderId: data['senderId'] ?? '',
           );
-          print("Now staring to save");
+          
+          print("Now starting to save");
           final newMessage = ChatMessage(
             messageId: data['messageId'], 
             text: data['message'], 
@@ -73,13 +90,6 @@ class SocketService {
           
           final chatStorageService = ChatStorageService(userId: data['senderId']);
           final messages = await chatStorageService.loadMessages();
-          // List<ChatMessage> _messages = messages;
-
-          print("Messages");
-          print(messages.toString());
-          print("newMessage");
-          print(newMessage);
-          print(data);
           messages.add(newMessage);
           chatStorageService.saveMessages(messages).catchError((e) {
             print('Failed to save received message: $e');
