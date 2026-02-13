@@ -33,43 +33,56 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _setupSocketListeners() {
+    _socketService.onMessageReceived = (data) {
+      if (!mounted) return;
+      print('Chat page received message: $data');
+      try {
+        final senderId = data['senderId'] ?? '';
+        if (senderId != widget.userId) return;
+
+        final message = ChatMessage(
+          messageId: data['messageId'] ?? '',
+          text: data['message'] ?? '',
+          timestamp: DateTime.fromMillisecondsSinceEpoch(data['timestamp'] ?? DateTime.now().millisecondsSinceEpoch),
+          isSent: false,
+          status: MessageStatus.delivered,
+        );
+        setState(() => _messages.add(message));
+        _storageService.saveMessages(_messages).catchError((e) {
+          print('Failed to save received message: $e');
+        });
+        
+        _socketService.messageDeliveredAck(
+          messageId: data['messageId'] ?? '',
+          senderId: data['senderId'] ?? '',
+        );
+        
+        _scrollToBottom();
+        _markMessagesAsRead();
+      } catch (e) {
+        print('Error processing received message: $e');
+      }
+    };
+
     _socketService.socket.on('message-sent', (data) {
       print('Message sent: $data');
-      _updateMessageStatus(data['messageId'], MessageStatus.sent);
+      if (data['messageId'] != null) {
+        _updateMessageStatus(data['messageId'], MessageStatus.sent);
+      }
     });
 
     _socketService.socket.on('message-delivered', (data) {
       print('Message delivered: $data');
-      _updateMessageStatus(data['messageId'], MessageStatus.delivered);
+      if (data['messageId'] != null) {
+        _updateMessageStatus(data['messageId'], MessageStatus.delivered);
+      }
     });
 
     _socketService.socket.on('message-read', (data) {
       print('Message read: $data');
-      _updateMessageStatus(data['messageId'], MessageStatus.read);
-    });
-
-    _socketService.socket.on('receive-message', (data) {
-      if (!mounted) return;
-      print('Received message: $data');
-      final message = ChatMessage(
-        messageId: data['messageId'],
-        text: data['message'],
-        timestamp: DateTime.fromMillisecondsSinceEpoch(data['timestamp']),
-        isSent: false,
-        status: MessageStatus.delivered,
-      );
-      setState(() => _messages.add(message));
-      _storageService.saveMessages(_messages).catchError((e) {
-        print('Failed to save received message: $e');
-      });
-      
-      _socketService.messageDeliveredAck(
-        messageId: data['messageId'],
-        senderId: data['senderId'],
-      );
-      
-      _scrollToBottom();
-      _markMessagesAsRead();
+      if (data['messageId'] != null) {
+        _updateMessageStatus(data['messageId'], MessageStatus.read);
+      }
     });
   }
 
@@ -317,10 +330,10 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void dispose() {
+    _socketService.onMessageReceived = null;
     _socketService.socket.off('message-sent');
     _socketService.socket.off('message-delivered');
     _socketService.socket.off('message-read');
-    _socketService.socket.off('receive-message');
     _controller.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -375,4 +388,9 @@ class ChatMessage {
     isSent: json['isSent'],
     status: MessageStatus.values[json['status']],
   );
+
+  @override
+  String toString(){
+    return 'messageId: $messageId text: $text timestamp: $timestamp';
+  }
 }

@@ -29,7 +29,7 @@ class _MessagesPageState extends State<MessagesPage> {
     try {
       final user = await HttpService().getUserDetails();
       currentUserId = user.id;
-      SocketService().init(currentUserId);
+      await SocketService().init(currentUserId);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

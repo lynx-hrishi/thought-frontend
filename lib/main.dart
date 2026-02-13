@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import './theme.dart';
 import './login_page.dart';
 import './pages/dashboard_page.dart';
+import './services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +15,7 @@ void main() async {
     ),
   );
   await HttpService().init();
+  await NotificationService().initialize();
   runApp(const ThoughtDropApp());
 }
 
