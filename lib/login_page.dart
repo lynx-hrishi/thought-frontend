@@ -1,4 +1,5 @@
 import 'package:currency_converter/http_service.dart';
+import 'package:currency_converter/utils/error_handler.dart';
 import 'package:dio/src/response.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -163,18 +164,24 @@ void continueBtnHandler(TextEditingController emailController, BuildContext cont
     return;
   }
 
-  Response loginData = await httpService.loginUser(email: email);
-  print(loginData);
+  try {
+    Response loginData = await httpService.loginUser(email: email);
+    print(loginData);
 
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => OtpPage(
-        email: email,
-        isRegistered: isEmailRegistered(email),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => OtpPage(
+          email: email,
+          isRegistered: isEmailRegistered(email),
+        ),
       ),
-    ),
-  );
+    );
+  } catch (err) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(getErrorMessage(err))),
+    );
+  }
 }
 
 Widget createOutlineButton(Icon icon, String label){

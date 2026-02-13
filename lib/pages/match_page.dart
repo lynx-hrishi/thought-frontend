@@ -1,9 +1,8 @@
 import 'package:currency_converter/http_service.dart';
-import 'package:currency_converter/login_page.dart';
+import 'package:currency_converter/utils/error_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/user_model.dart';
-import '../models/dummy_data_provider.dart';
 import '../theme.dart';
 import 'user_card.dart';
 
@@ -17,7 +16,7 @@ class MatchPage extends StatefulWidget {
 class _MatchPageState extends State<MatchPage> {
   List<UserModel> users = [];
   int currentIndex = 0;
-  HttpService _httpService = HttpService();
+  final HttpService _httpService = HttpService();
   bool isLoading = true;
 
   @override
@@ -35,11 +34,13 @@ class _MatchPageState extends State<MatchPage> {
       });
     }
     catch(err){
+      setState(() {
+        isLoading = false;
+      });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(err.toString())),
+          SnackBar(content: Text(getErrorMessage(err))),
         );
-        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginPage()));
       }
     }
   }
@@ -54,7 +55,7 @@ class _MatchPageState extends State<MatchPage> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $e')),
+            SnackBar(content: Text(getErrorMessage(e))),
           );
         }
       }
@@ -77,7 +78,7 @@ class _MatchPageState extends State<MatchPage> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $e')),
+            SnackBar(content: Text(getErrorMessage(e))),
           );
         }
       }

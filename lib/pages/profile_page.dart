@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../http_service.dart';
 import '../models/user_model.dart';
 import '../theme.dart';
+import '../utils/error_handler.dart';
 import '../widgets/dio_image.dart';
 import '../login_page.dart';
 import 'edit_profile_page.dart';
@@ -39,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load profile: $e')),
+          SnackBar(content: Text(getErrorMessage(e))),
         );
       }
     }
@@ -164,6 +165,21 @@ class _ProfilePageState extends State<ProfilePage> {
                       return Container(
                         color: Colors.grey[200],
                         child: const Center(child: CircularProgressIndicator()),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[300],
+                        child: const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.broken_image, size: 64, color: Colors.grey),
+                              SizedBox(height: 8),
+                              Text('Failed to load image', style: TextStyle(color: Colors.grey)),
+                            ],
+                          ),
+                        ),
                       );
                     },
                   );

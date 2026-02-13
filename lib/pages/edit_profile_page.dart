@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../http_service.dart';
 import '../models/user_model.dart';
 import '../theme.dart';
+import '../utils/error_handler.dart';
 import '../widgets/dio_image.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -98,6 +99,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
               child: Image(
                 image: DioImage(imageUrl),
                 fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[800],
+                    child: const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.broken_image, size: 64, color: Colors.white54),
+                          SizedBox(height: 8),
+                          Text('Failed to load image', style: TextStyle(color: Colors.white54)),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             Positioned(
@@ -129,7 +145,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       );
                     } catch (e) {
                       messenger.showSnackBar(
-                        SnackBar(content: Text('Error: $e')),
+                        SnackBar(content: Text(getErrorMessage(e))),
                       );
                     }
                   },
@@ -165,7 +181,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text(getErrorMessage(e))),
         );
       }
     } finally {
@@ -217,6 +233,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           backgroundImage: newProfileImage != null
                               ? FileImage(newProfileImage!)
                               : DioImage(widget.user.images[0]),
+                          onBackgroundImageError: (exception, stackTrace) {},
+                          child: newProfileImage == null ? Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey[300],
+                            ),
+                            child: const Icon(Icons.person, size: 40, color: Colors.grey),
+                          ) : null,
                         ),
                         Positioned.fill(
                           child: Container(
@@ -420,6 +444,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             image: DioImage(imageUrl),
                             width: 100,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                width: 100,
+                                color: Colors.grey[300],
+                                child: const Icon(Icons.broken_image, color: Colors.grey),
+                              );
+                            },
                           ),
                         ),
                       ),

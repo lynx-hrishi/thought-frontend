@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:currency_converter/http_service.dart';
+import 'package:currency_converter/utils/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -91,7 +92,7 @@ class _OtpPageState extends State<OtpPage>
     catch(err){
       shakeController.forward(from: 0);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(err.toString())),
+          SnackBar(content: Text(getErrorMessage(err))),
         );
     }
   }
@@ -207,8 +208,22 @@ class _OtpPageState extends State<OtpPage>
             
                   secondsRemaining == 0
                       ? TextButton(
-                    onPressed: () {
-                      startTimer();
+                    onPressed: () async {
+                      try {
+                        await HttpService().loginUser(email: widget.email);
+                        startTimer();
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('OTP resent successfully')),
+                          );
+                        }
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(getErrorMessage(e))),
+                          );
+                        }
+                      }
                     },
                     child: const Text("Resend OTP"),
                   )

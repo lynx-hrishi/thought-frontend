@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../http_service.dart';
+import '../utils/error_handler.dart';
 import '../widgets/dio_image.dart';
 import '../services/socket_service.dart';
 import './chat_page.dart';
@@ -25,9 +26,17 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 
   Future<void> _initSocket() async {
-    final user = await HttpService().getUserDetails();
-    currentUserId = user.id;
-    SocketService().init(currentUserId);
+    try {
+      final user = await HttpService().getUserDetails();
+      currentUserId = user.id;
+      SocketService().init(currentUserId);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(getErrorMessage(e))),
+        );
+      }
+    }
   }
 
   Future<void> _loadMatchedUsers() async {
@@ -41,6 +50,11 @@ class _MessagesPageState extends State<MessagesPage> {
       setState(() {
         isLoading = false;
       });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(getErrorMessage(e))),
+        );
+      }
     }
   }
 
@@ -91,6 +105,14 @@ class _MessagesPageState extends State<MessagesPage> {
                       leading: CircleAvatar(
                         radius: 28,
                         backgroundImage: DioImage(user['profileImageUrl']),
+                        onBackgroundImageError: (exception, stackTrace) {},
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey[300],
+                          ),
+                          child: const Icon(Icons.person, color: Colors.grey),
+                        ),
                       ),
                       title: Text(
                         user['name'],

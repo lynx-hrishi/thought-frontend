@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/chat_storage_service.dart';
 import '../services/socket_service.dart';
+import '../utils/error_handler.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatPage extends StatefulWidget {
@@ -58,7 +59,9 @@ class _ChatPageState extends State<ChatPage> {
         status: MessageStatus.delivered,
       );
       setState(() => _messages.add(message));
-      _storageService.saveMessages(_messages);
+      _storageService.saveMessages(_messages).catchError((e) {
+        print('Failed to save received message: $e');
+      });
       
       _socketService.messageDeliveredAck(
         messageId: data['messageId'],
@@ -87,14 +90,24 @@ class _ChatPageState extends State<ChatPage> {
       final index = _messages.indexWhere((m) => m.messageId == messageId);
       if (index != -1) {
         _messages[index] = _messages[index].copyWith(status: status);
-        _storageService.saveMessages(_messages);
+        _storageService.saveMessages(_messages).catchError((e) {
+          print('Failed to update message status: $e');
+        });
       }
     });
   }
 
   Future<void> _loadMessages() async {
-    final messages = await _storageService.loadMessages();
-    setState(() => _messages = messages);
+    try {
+      final messages = await _storageService.loadMessages();
+      setState(() => _messages = messages);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(getErrorMessage(e))),
+        );
+      }
+    }
   }
 
   Future<void> _sendMessage() async {
@@ -110,7 +123,15 @@ class _ChatPageState extends State<ChatPage> {
     );
     
     setState(() => _messages.add(message));
-    await _storageService.saveMessages(_messages);
+    try {
+      await _storageService.saveMessages(_messages);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(getErrorMessage(e))),
+        );
+      }
+    }
     _controller.clear();
     
     print('Sending message: $messageId to ${widget.userId}');
@@ -157,7 +178,15 @@ class _ChatPageState extends State<ChatPage> {
 
     if (confirm == true) {
       setState(() => _messages.clear());
-      await _storageService.clearMessages();
+      try {
+        await _storageService.clearMessages();
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(getErrorMessage(e))),
+          );
+        }
+      }
     }
   }
 
