@@ -106,13 +106,6 @@ class _MessagesPageState extends State<MessagesPage> {
                         radius: 28,
                         backgroundImage: DioImage(user['profileImageUrl']),
                         onBackgroundImageError: (exception, stackTrace) {},
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey[300],
-                          ),
-                          child: const Icon(Icons.person, color: Colors.grey),
-                        ),
                       ),
                       title: Text(
                         user['name'],
