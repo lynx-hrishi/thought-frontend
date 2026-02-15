@@ -27,8 +27,7 @@ class HttpService{
 
     dio = Dio(
       BaseOptions(
-        // baseUrl: "https://thoughtdrop-backend.onrender.com",
-        baseUrl: "https://rent-textbook-dated-arlington.trycloudflare.com",
+        baseUrl: "https://thoughtdrop-backend.onrender.com",
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
         headers: {
@@ -86,7 +85,7 @@ class HttpService{
 
     formData.fields.add(MapEntry('name', name));
     formData.fields.add(MapEntry('gender', gender));
-    formData.fields.add(MapEntry('dob', dateOfBirth.replaceAll("/", '-')));
+    formData.fields.add(MapEntry('dob', dateOfBirth));
     formData.fields.add(MapEntry('zodiacSign', zodiacSign));
     formData.fields.add(MapEntry('profession', profession));
     for (var interest in interests) {
