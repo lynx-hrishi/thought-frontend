@@ -27,7 +27,8 @@ class HttpService{
 
     dio = Dio(
       BaseOptions(
-        baseUrl: "https://thoughtdrop-backend.onrender.com",
+        // baseUrl: "https://thoughtdrop-backend.onrender.com",
+        baseUrl: "https://rent-textbook-dated-arlington.trycloudflare.com",
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
         headers: {
@@ -65,6 +66,52 @@ class HttpService{
   
   String _normalizeGender(String gender) {
     return gender.toUpperCase();
+  }
+
+  Future<Response> setUserPreferenceService(
+    String name,
+    String gender,
+    String dateOfBirth,
+    String zodiacSign,
+    String profession,
+    List<String> interests,
+    String partnerGender,
+    String partnerPreference,
+    int ageFrom,
+    int ageEnd,
+    File profileImage,
+    List<File> postImages,
+  ) async {
+    FormData formData = FormData();
+
+    formData.fields.add(MapEntry('name', name));
+    formData.fields.add(MapEntry('gender', gender));
+    formData.fields.add(MapEntry('dob', dateOfBirth.replaceAll("/", '-')));
+    formData.fields.add(MapEntry('zodiacSign', zodiacSign));
+    formData.fields.add(MapEntry('profession', profession));
+    for (var interest in interests) {
+      formData.fields.add(MapEntry('interests', interest));
+    }
+    formData.fields.add(MapEntry('partnerGender', partnerGender));
+    formData.fields.add(MapEntry('partnerPreference', partnerPreference));
+    formData.fields.add(MapEntry('ageFrom', ageFrom.toString()));
+    formData.fields.add(MapEntry('ageEnd', ageEnd.toString()));
+
+    formData.files.add(MapEntry(
+      'profileImage',
+      await MultipartFile.fromFile(profileImage.path,
+          filename: profileImage.path.split('/').last),
+    ));
+
+    for (var image in postImages) {
+      formData.files.add(MapEntry(
+        'postImages',
+        await MultipartFile.fromFile(image.path,
+            filename: image.path.split('/').last),
+      ));
+    }
+
+    return await dio.post("/api/user/set-user-preference", data: formData);
   }
 
   Future<List<UserModel>> getMatchesForUsers({ int page=1, int limit=40 } ) async {

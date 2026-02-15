@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'theme.dart';
 import 'pages/dashboard_page.dart';
-import 'personal_details_page.dart';
+import 'personal_details_page_new.dart';
 
 class OtpPage extends StatefulWidget {
   final String email;
