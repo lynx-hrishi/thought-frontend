@@ -24,6 +24,7 @@ class _PersonalDetailsPageState extends State<PersonalDetailsPage> {
   String gender = "Female";
   String status = "";
   String zodiac = "";
+  DateTime? selectedDate;
   int age = 0;
   File? avatar;
   List<File> postImages = [];
@@ -82,6 +83,7 @@ Looking for meaningful connections 💜
     if (step < totalSteps - 1) {
       setState(() => step++);
     } else {
+      final formattedDob = "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
       Navigator.push(
         context,
         SlidePageRoute(
@@ -89,7 +91,7 @@ Looking for meaningful connections 💜
             name: nameCtrl.text,
             bio: profileSummary,
             gender: gender,
-            dateOfBirth: dobCtrl.text.split(' • ')[0],
+            dateOfBirth: formattedDob,
             zodiacSign: zodiac,
             profession: professionCtrl.text,
             interests: interests,
@@ -113,6 +115,7 @@ Looking for meaningful connections 💜
       age--;
     }
     zodiac = detectZodiac(picked);
+    selectedDate = picked;
   }
 
   Future<void> pickAvatar() async {
