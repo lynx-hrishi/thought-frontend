@@ -37,6 +37,7 @@ class _MatchPreferencesPageState extends State<MatchPreferencesPage> {
   final PageController _pageController = PageController();
   final TextEditingController dateExpectationCtrl = TextEditingController();
   int currentPage = 0;
+  bool isLoading = false;
 
   String lookingFor = "Female";
   RangeValues ageRange = const RangeValues(18, 30);
@@ -61,6 +62,7 @@ class _MatchPreferencesPageState extends State<MatchPreferencesPage> {
   }
 
   void finish() async {
+    setState(() => isLoading = true);
     try {
       await HttpService().setUserPreferenceService(
         widget.name,
@@ -88,6 +90,10 @@ class _MatchPreferencesPageState extends State<MatchPreferencesPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: ${e.toString()}")),
         );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
       }
     }
   }
@@ -347,17 +353,25 @@ class _MatchPreferencesPageState extends State<MatchPreferencesPage> {
                               ),
                               elevation: 4,
                             ),
-                            onPressed: currentPage == 3 ? finish : nextPage,
-                            child: Text(
-                              textAlign: TextAlign.center,
-                              currentPage == 3 ? "Start Matching" : "Continue",
-                              style: const TextStyle(
-                                
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
+                            onPressed: isLoading ? null : (currentPage == 3 ? finish : nextPage),
+                            child: isLoading && currentPage == 3
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Text(
+                                    currentPage == 3 ? "Start Matching" : "Continue",
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
                         ),
                       ],

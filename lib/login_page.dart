@@ -6,12 +6,25 @@ import 'package:google_fonts/google_fonts.dart';
 import 'theme.dart';
 import 'otp_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final emailController = TextEditingController();
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final emailController = TextEditingController();
     final isWide = MediaQuery.of(context).size.width >= 700;
 
     return Scaffold(
@@ -106,13 +119,24 @@ class LoginPage extends StatelessWidget {
                   
                         /// CONTINUE BUTTON → OTP PAGE
                         ElevatedButton(
-                          onPressed: (){
-                            continueBtnHandler(emailController, context);
+                          onPressed: isLoading ? null : () {
+                            continueBtnHandler(emailController, context, (loading) {
+                              setState(() => isLoading = loading);
+                            });
                           },
-                          child: const Text(
-                            "Continue",
-                            style: TextStyle(fontSize: 16),
-                          ),
+                          child: isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Text(
+                                  "Continue",
+                                  style: TextStyle(fontSize: 16),
+                                ),
                         ),
                   
                         const SizedBox(height: 20),
@@ -150,37 +174,47 @@ bool isEmailRegistered(String email) {
   return email.contains("student") || email.contains("admin");
 }
 
-void continueBtnHandler(TextEditingController emailController, BuildContext context) async {
+void continueBtnHandler(
+  TextEditingController emailController,
+  BuildContext context,
+  Function(bool) setLoading,
+) async {
   final email = emailController.text.trim();
   HttpService httpService = HttpService();
 
   if (!isValidEmail(email)) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content:
-        Text("Please enter a valid email address"),
+        content: Text("Please enter a valid email address"),
       ),
     );
     return;
   }
 
+  setLoading(true);
   try {
     Response loginData = await httpService.loginUser(email: email);
     print(loginData);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => OtpPage(
-          email: email,
-          isRegistered: isEmailRegistered(email),
+    if (context.mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => OtpPage(
+            email: email,
+            isRegistered: isEmailRegistered(email),
+          ),
         ),
-      ),
-    );
+      );
+    }
   } catch (err) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(getErrorMessage(err))),
-    );
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(getErrorMessage(err))),
+      );
+    }
+  } finally {
+    setLoading(false);
   }
 }
 
