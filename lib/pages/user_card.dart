@@ -289,9 +289,9 @@ class _UserCardState extends State<UserCard> with SingleTickerProviderStateMixin
                                         interest,
                                         style: GoogleFonts.poppins(fontSize: 12),
                                       ),
-                                      backgroundColor: AppTheme.pink.withOpacity(0.2),
+                                      backgroundColor: AppTheme.lavender.withOpacity(0.2),
                                       labelStyle: const TextStyle(
-                                        color: AppTheme.pink,
+                                        color: AppTheme.lavender,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -330,7 +330,7 @@ class _UserCardState extends State<UserCard> with SingleTickerProviderStateMixin
                         ),
                         FloatingActionButton(
                           onPressed: () => _animateSwipe(true),
-                          backgroundColor: AppTheme.pink,
+                          backgroundColor: AppTheme.lavender,
                           child: const Icon(
                             Icons.favorite,
                             color: Colors.white,

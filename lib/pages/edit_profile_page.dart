@@ -386,9 +386,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       }
                     });
                   },
-                  selectedColor: AppTheme.pink.withOpacity(0.3),
+                  selectedColor: AppTheme.lavender.withOpacity(0.3),
                   labelStyle: TextStyle(
-                    color: isSelected ? AppTheme.pink : Colors.black,
+                    color: isSelected ? AppTheme.lavender : Colors.black,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 );

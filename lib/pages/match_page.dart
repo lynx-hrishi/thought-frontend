@@ -107,7 +107,7 @@ class _MatchPageState extends State<MatchPage> {
             children: [
               const Icon(
                 Icons.favorite,
-                color: AppTheme.pink,
+                color: AppTheme.lavender,
                 size: 80,
               ),
               const SizedBox(height: 16),
@@ -171,7 +171,7 @@ class _MatchPageState extends State<MatchPage> {
                   const Icon(
                     Icons.favorite_outline,
                     size: 64,
-                    color: AppTheme.pink,
+                    color: AppTheme.lavender,
                   ),
                   const SizedBox(height: 16),
                   Text(

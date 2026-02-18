@@ -263,9 +263,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               interest,
                               style: GoogleFonts.poppins(fontSize: 12),
                             ),
-                            backgroundColor: AppTheme.pink.withOpacity(0.2),
+                            backgroundColor: AppTheme.lavender.withOpacity(0.2),
                             labelStyle: const TextStyle(
-                              color: AppTheme.pink,
+                              color: AppTheme.lavender,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

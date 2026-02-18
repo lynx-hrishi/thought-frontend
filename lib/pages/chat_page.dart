@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/chat_storage_service.dart';
 import '../services/socket_service.dart';
+import '../theme.dart';
 import '../utils/error_handler.dart';
 import 'package:uuid/uuid.dart';
 
@@ -242,7 +243,7 @@ class _ChatPageState extends State<ChatPage> {
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                            color: message.isSent ? Colors.blue : Colors.grey[300],
+                            color: message.isSent ? AppTheme.lavender : Colors.grey[300],
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Column(
@@ -274,7 +275,7 @@ class _ChatPageState extends State<ChatPage> {
                                                 : Icons.access_time,
                                     size: 14,
                                     color: message.status == MessageStatus.read
-                                        ? Colors.blue[300]
+                                        ? AppTheme.lavender.withOpacity(0.7)
                                         : Colors.white70,
                                   ),
                                 ],
@@ -314,7 +315,7 @@ class _ChatPageState extends State<ChatPage> {
                 IconButton(
                   onPressed: _sendMessage,
                   icon: const Icon(Icons.send),
-                  color: Colors.blue,
+                  color: AppTheme.lavender,
                 ),
               ],
             ),
