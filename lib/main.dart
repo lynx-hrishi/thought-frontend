@@ -17,6 +17,7 @@ void main() async {
   );
   await HttpService().init();
   await NotificationService().initialize();
+  await NotificationService().requestPermission();
   runApp(const ThoughtDropApp());
 }
 

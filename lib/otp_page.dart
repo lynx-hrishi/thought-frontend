@@ -29,6 +29,7 @@ class _OtpPageState extends State<OtpPage>
   final List<FocusNode> focusNodes = List.generate(6, (_) => FocusNode());
 
   bool isOtpComplete = false;
+  bool isLoading = false;
   int secondsRemaining = 30;
   Timer? timer;
 
@@ -69,31 +70,32 @@ class _OtpPageState extends State<OtpPage>
     String otp = controllers.map((c) => c.text).join();
     HttpService httpService = HttpService();
 
+    setState(() => isLoading = true);
     try{
       Response res = await httpService.otpVerify(email: widget.email, otp: int.parse(otp));
       bool isProfileSet = res.data['data']['user']['isProfileSet'];
-      // print(res.data.data.isProfileSet);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => isProfileSet
-              ? const DashboardPage()
-              : const PersonalDetailsPage(),
-        ),
-      );
-
-      // } else {
-      //   shakeController.forward(from: 0);
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     const SnackBar(content: Text("Incorrect OTP")),
-      //   );:731343
-      // }
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => isProfileSet
+                ? const DashboardPage()
+                : const PersonalDetailsPage(),
+          ),
+        );
+      }
     }
     catch(err){
       shakeController.forward(from: 0);
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(getErrorMessage(err))),
         );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 
@@ -107,7 +109,18 @@ class _OtpPageState extends State<OtpPage>
         maxLength: 1,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        decoration: const InputDecoration(counterText: ""),
+        decoration: InputDecoration(
+          counterText: "",
+          contentPadding: EdgeInsets.zero,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: AppTheme.lavender, width: 2),
+          ),
+        ),
         onChanged: (value) {
           if (value.isNotEmpty && index < 5) {
             focusNodes[index + 1].requestFocus();
@@ -115,9 +128,6 @@ class _OtpPageState extends State<OtpPage>
           checkOtp();
         },
         onSubmitted: (_) => checkOtp(),
-        // onTap: () => controllers[index].selection =
-        //     TextSelection.fromPosition(
-        //         TextPosition(offset: controllers[index].text.length)),
       ),
     );
   }
@@ -197,11 +207,20 @@ class _OtpPageState extends State<OtpPage>
                   const SizedBox(height: 30),
             
                   ElevatedButton(
-                    onPressed: isOtpComplete ? verifyOtp : null,
+                    onPressed: (isOtpComplete && !isLoading) ? verifyOtp : null,
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 48),
                     ),
-                    child: const Text("Verify OTP"),
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text("Verify OTP"),
                   ),
             
                   const SizedBox(height: 16),

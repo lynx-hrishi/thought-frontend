@@ -20,8 +20,6 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController professionCtrl;
   late TextEditingController partnerPrefCtrl;
-  late String gender;
-  late String initialGender;
   late String initialProfession;
   late String initialPartnerPref;
   late List<String> initialInterests;
@@ -31,8 +29,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
   List<File> newPostImages = [];
 
   final List<String> availableInterests = [
-    'Reading', 'Travel', 'Music', 'Movies', 'Sports', 'Cooking',
-    'Photography', 'Gaming', 'Art', 'Fitness', 'Dancing', 'Writing'
+    '🎬 Movies',
+    '📚 Reading',
+    '🎮 Gaming',
+    '🏞️ Travel',
+    '🧘 Fitness',
+    '💻 Technology',
+    '🎧 Music',
+    '🍳 Cooking',
+    '🎨 Art',
+    '⚽ Sports',
   ];
 
   @override
@@ -40,10 +46,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.initState();
     professionCtrl = TextEditingController(text: widget.user.profession);
     partnerPrefCtrl = TextEditingController(text: widget.user.partnerPreference ?? '');
-    gender = widget.user.gender;
     selectedInterests = List.from(widget.user.interests);
     
-    initialGender = gender;
     initialProfession = widget.user.profession;
     initialPartnerPref = widget.user.partnerPreference ?? '';
     initialInterests = List.from(widget.user.interests);
@@ -52,7 +56,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   bool get hasChanges {
     return newProfileImage != null ||
         newPostImages.isNotEmpty ||
-        gender != initialGender ||
         professionCtrl.text != initialProfession ||
         partnerPrefCtrl.text != initialPartnerPref ||
         !_listsEqual(selectedInterests, initialInterests);
@@ -165,7 +168,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() => isLoading = true);
     try {
       await HttpService().updateProfile(
-        gender: gender,
+        gender: widget.user.gender,
         profession: professionCtrl.text,
         interests: selectedInterests,
         partnerPreference: partnerPrefCtrl.text,
@@ -319,7 +322,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             const SizedBox(height: 20),
 
-            // Gender (Editable)
+            // Gender (Non-editable)
             Text(
               'Gender',
               style: GoogleFonts.poppins(
@@ -329,14 +332,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
             ),
             const SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              value: gender,
-              items: ['MALE', 'FEMALE', 'OTHER']
-                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                  .toList(),
-              onChanged: (v) => setState(() => gender = v!),
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+            TextField(
+              controller: TextEditingController(text: widget.user.gender),
+              enabled: false,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey[200],
               ),
             ),
             const SizedBox(height: 20),
